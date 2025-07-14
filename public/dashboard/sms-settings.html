@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration SMS - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <style>
+        .sms-grid {
+            display: grid;
+            gap: 2rem;
+            max-width: 900px;
+        }
+        
+        .sms-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .message-preview {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .phone-mockup {
+            background: #000;
+            border-radius: 1.5rem;
+            padding: 0.5rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .phone-screen {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1rem;
+            color: #000;
+        }
+        
+        .message-bubble {
+            background: #007AFF;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 0.5rem;
+            max-width: 80%;
+            margin-left: auto;
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+        
+        .character-count {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+        
+        .character-count.warning {
+            color: var(--warning-yellow);
+        }
+        
+        .character-count.error {
+            color: var(--error-red);
+        }
+        
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .day-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .day-checkbox:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary-blue);
+        }
+        
+        .day-checkbox input:checked + label {
+            color: var(--primary-blue);
+        }
+        
+        .time-range {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .templates-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .template-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary-blue);
+        }
+        
+        .template-card.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: var(--primary-blue);
+        }
+        
+        .template-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-preview {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-mini {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .stat-mini-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-mini-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .test-section {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success-green);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.25rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="qr-code.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        </svg>
+                        QR Code
+                    </a></li>
+                    <li><a href="analytics.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                        </svg>
+                        Analyses
+                    </a></li>
+                    <li><a href="sms-settings.html" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        SMS & Messages
+                    </a></li>
+                    <li><a href="settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Paramètres
+                    </a></li>
+                    <li><a href="subscription.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        </svg>
+                        Abonnement
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">Configuration SMS</h1>
+                    <p style="color: var(--text-secondary);">Personnalisez vos messages automatiques</p>
+                </div>
+            </div>
+
+            <!-- Statistiques SMS -->
+            <div class="stats-row">
+                <div class="stat-mini">
+                    <div class="stat-mini-value">89</div>
+                    <div class="stat-mini-label">SMS envoyés ce mois</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">67%</div>
+                    <div class="stat-mini-label">Taux d'ouverture</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">23</div>
+                    <div class="stat-mini-label">Avis générés</div>
+                </div>
+                <div class="stat-mini">
+                    <div class="stat-mini-value">411</div>
+                    <div class="stat-mini-label">SMS restants</div>
+                </div>
+            </div>
+
+            <div class="sms-grid">
+                <!-- Message personnalisé -->
+                <div class="sms-section">
+                    <h3 class="section-title">Message de remerciement</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        Ce message sera envoyé automatiquement après la visite du client
+                    </p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Votre message personnalisé</label>
+                        <textarea id="smsMessage" class="form-input" rows="4" maxlength="160">Merci pour votre visite chez Demo Business ! 😊 Nous espérons que tout s'est bien passé. Votre avis nous intéresse beaucoup !</textarea>
+                        <div class="character-count" id="charCount">152/160 caractères</div>
+                    </div>
+                    
+                    <!-- Aperçu du message -->
+                    <div class="message-preview">
+                        <h4 style="color: #333; margin-bottom: 1rem;">Aperçu sur téléphone</h4>
+                        <div class="phone-mockup">
+                            <div class="phone-screen">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #eee;">
+                                    <div style="width: 30px; height: 30px; background: #007AFF; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">DB</div>
+                                    <div>
+                                        <div style="font-weight: 600; font-size: 0.875rem;">Demo Business</div>
+                                        <div style="font-size: 0.75rem; color: #666;">Maintenant</div>
+                                    </div>
+                                </div>
+                                <div class="message-bubble" id="messagePreview">
+                                    Merci pour votre visite chez Demo Business ! 😊 Nous espérons que tout s'est bien passé. Votre avis nous intéresse beaucoup !
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveMessage()">Sauvegarder le message</button>
+                </div>
+
+                <!-- Templates de messages -->
+                <div class="sms-section">
+                    <h3 class="section-title">Templates prêts à l'emploi</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        Sélectionnez un template pour gagner du temps
+                    </p>
+                    
+                    <div class="templates-grid">
+                        <div class="template-card" onclick="selectTemplate(0)">
+                            <div class="template-title">👋 Classique</div>
+                            <div class="template-preview">Merci pour votre visite ! Votre satisfaction est notre priorité. Laissez-nous un avis pour nous aider à nous améliorer.</div>
+                        </div>
+                        
+                        <div class="template-card" onclick="selectTemplate(1)">
+                            <div class="template-title">🎁 Avec promotion</div>
+                            <div class="template-preview">Merci pour votre visite ! Votre avis compte beaucoup pour nous. En plus, profitez de -10% sur votre prochaine venue !</div>
+                        </div>
+                        
+                        <div class="template-card" onclick="selectTemplate(2)">
+                            <div class="template-title">😊 Amical</div>
+                            <div class="template-preview">Salut ! J'espère que vous avez passé un bon moment chez nous. Votre retour nous aiderait énormément à progresser !</div>
+                        </div>
+                        
+                        <div class="template-card" onclick="selectTemplate(3)">
+                            <div class="template-title">🏆 Professionnel</div>
+                            <div class="template-preview">Nous vous remercions pour votre confiance. Votre expérience client est essentielle pour maintenir notre excellence.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Planning d'envoi -->
+                <div class="sms-section">
+                    <h3 class="section-title">Planning d'envoi</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Délai d'envoi après la visite</label>
+                        <select id="smsDelay" class="form-input">
+                            <option value="1">1 jour</option>
+                            <option value="2">2 jours</option>
+                            <option value="3" selected>3 jours</option>
+                            <option value="5">5 jours</option>
+                            <option value="7">1 semaine</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Jours d'envoi</label>
+                        <div class="schedule-grid">
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="monday" checked>
+                                <span>Lundi</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="tuesday" checked>
+                                <span>Mardi</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="wednesday" checked>
+                                <span>Mercredi</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="thursday" checked>
+                                <span>Jeudi</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="friday" checked>
+                                <span>Vendredi</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="saturday">
+                                <span>Samedi</span>
+                            </label>
+                            <label class="day-checkbox">
+                                <input type="checkbox" id="sunday">
+                                <span>Dimanche</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Heures d'envoi</label>
+                        <div class="time-range">
+                            <input type="time" id="startTime" class="form-input" value="09:00">
+                            <span style="color: var(--text-secondary);">à</span>
+                            <input type="time" id="endTime" class="form-input" value="18:00">
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                            Les SMS seront envoyés uniquement dans cette plage horaire
+                        </p>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveSchedule()">Sauvegarder le planning</button>
+                </div>
+
+                <!-- Test du système -->
+                <div class="sms-section">
+                    <h3 class="section-title">Test du système</h3>
+                    
+                    <div class="test-section">
+                        <h4 style="color: var(--success-green); margin-bottom: 1rem;">🧪 Testez vos messages</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                            Envoyez-vous un SMS de test pour vérifier le rendu de vos messages
+                        </p>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Numéro de test</label>
+                            <input type="tel" id="testNumber" class="form-input" placeholder="+33 6 12 34 56 78">
+                        </div>
+                        
+                        <button class="btn btn-secondary" onclick="sendTestSMS()">
+                            📱 Envoyer un SMS de test
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        const templates = [
+            "Merci pour votre visite ! Votre satisfaction est notre priorité. Laissez-nous un avis pour nous aider à nous améliorer.",
+            "Merci pour votre visite ! Votre avis compte beaucoup pour nous. En plus, profitez de -10% sur votre prochaine venue !",
+            "Salut ! J'espère que vous avez passé un bon moment chez nous. Votre retour nous aiderait énormément à progresser !",
+            "Nous vous remercions pour votre confiance. Votre expérience client est essentielle pour maintenir notre excellence."
+        ];
+
+        // Mise à jour du compteur de caractères
+        document.getElementById('smsMessage').addEventListener('input', function() {
+            const message = this.value;
+            const charCount = document.getElementById('charCount');
+            const messagePreview = document.getElementById('messagePreview');
+            
+            const length = message.length;
+            charCount.textContent = `${length}/160 caractères`;
+            
+            // Changer la couleur selon la longueur
+            if (length > 160) {
+                charCount.className = 'character-count error';
+            } else if (length > 140) {
+                charCount.className = 'character-count warning';
+            } else {
+                charCount.className = 'character-count';
+            }
+            
+            // Mettre à jour l'aperçu
+            messagePreview.textContent = message || "Votre message apparaîtra ici...";
+        });
+
+        function selectTemplate(index) {
+            // Supprimer la sélection précédente
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // Sélectionner le nouveau template
+            document.querySelectorAll('.template-card')[index].classList.add('selected');
+            
+            // Remplir le textarea
+            document.getElementById('smsMessage').value = templates[index];
+            
+            // Déclencher l'événement pour mettre à jour l'aperçu
+            document.getElementById('smsMessage').dispatchEvent(new Event('input'));
+        }
+
+        function saveMessage() {
+            const message = document.getElementById('smsMessage').value;
+            if (message.length > 160) {
+                Utils.showAlert('Le message ne peut pas dépasser 160 caractères', 'error');
+                return;
+            }
+            Utils.showAlert('Message sauvegardé avec succès !', 'success');
+        }
+
+        function saveSchedule() {
+            Utils.showAlert('Planning sauvegardé avec succès !', 'success');
+        }
+
+        function sendTestSMS() {
+            const testNumber = document.getElementById('testNumber').value;
+            const message = document.getElementById('smsMessage').value;
+            
+            if (!testNumber) {
+                Utils.showAlert('Veuillez entrer un numéro de téléphone', 'error');
+                return;
+            }
+            
+            if (!message) {
+                Utils.showAlert('Veuillez configurer votre message', 'error');
+                return;
+            }
+            
+            // Simulation d'envoi
+            Utils.showAlert('SMS de test envoyé ! Vous devriez le recevoir dans quelques instants.', 'success');
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            // Déclencher l'aperçu initial
+            document.getElementById('smsMessage').dispatchEvent(new Event('input'));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration initiale - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .onboarding-container {
+            min-height: 100vh;
+            background: var(--dark-bg);
+            padding: 2rem 1rem;
+        }
+        
+        .onboarding-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .onboarding-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            max-width: 600px;
+            height: 8px;
+            background: var(--card-bg);
+            border-radius: 4px;
+            margin: 2rem auto;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .step-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 3rem;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+        
+        .step-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .step-description {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .logo-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 2rem;
+        }
+        
+        .logo-upload-area:hover {
+            border-color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .logo-preview-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: none;
+        }
+        
+        .plan-summary {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feature-checklist {
+            list-style: none;
+            margin: 2rem 0;
+        }
+        
+        .feature-checklist li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .feature-checklist li::before {
+            content: "✓";
+            color: var(--success-green);
+            font-weight: bold;
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .btn-skip {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        .completion-icon {
+            width: 120px;
+            height: 120px;
+            background: var(--success-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-container">
+        <div class="container">
+            <div class="onboarding-header">
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 2rem; height: 2rem; margin-right: 0.5rem; color: var(--primary-blue);">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span style="font-size: 1.5rem; font-weight: 700;">ReviewBoost</span>
+                </div>
+                <h1 class="onboarding-title">Configuration de votre compte</h1>
+                <p style="color: var(--text-secondary); font-size: 1.125rem;">
+                    Suivez ces étapes pour configurer votre système ReviewBoost
+                </p>
+            </div>
+
+            <!-- Barre de progression -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+            </div>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
+                Étape <span id="currentStep">1</span> sur 5
+            </p>
+
+            <div class="step-container">
+                <!-- Étape 1: Informations entreprise -->
+                <div class="step active" id="step1">
+                    <div class="step-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M19 21V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/>
+                        </svg>
+                    </div>
+                    <h2 class="step-title">Informations de votre entreprise</h2>
+                    <p class="step-description">
+                        Dites-nous en plus sur votre entreprise pour personnaliser votre expérience
+                    </p>
+                    
+                    <form id="businessForm">
+                        <div class="form-group">
+                            <label class="form-label">Nom de votre entreprise *</label>
+                            <input type="text" id="businessName" class="form-input" required placeholder="Restaurant Le Petit Coin">
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Secteur d'activité *</label>
+                                <select id="businessType" class="form-input" required>
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="restaurant">Restaurant</option>
+                                    <option value="cafe">Café/Bar</option>
+                                    <option value="salon">Salon de coiffure/beauté</option>
+                                    <option value="medical">Cabinet médical/dentaire</option>
+                                    <option value="retail">Commerce de détail</option>
+                                    <option value="automotive">Garage automobile</option>
+                                    <option value="fitness">Salle de sport</option>
+                                    <option value="hotel">Hôtel/Hébergement</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ville *</label>
+                                <input type="text" id="businessCity" class="form-input" required placeholder="Paris">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Adresse complète</label>
+                            <input type="text" id="businessAddress" class="form-input" placeholder="123 Rue de la République, 75001 Paris">
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Étape 2: Logo et branding -->
+                <div class="step" id="step2">
+                    <div class="step-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <rect width="18" height="18" x="3" y="3" rx="2"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                    </div>
+                    <h2 class="step-title">Logo et identité visuelle</h2>
+                    <p class="step-description">
+                        Ajoutez votre logo pour personnaliser vos formulaires de satisfaction
+                    </p>
+                    
+                    <div class="logo-upload-area" onclick="document.getElementById('logoFile').click()">
+                        <img id="logoPreview" class="logo-preview-img" alt="Logo preview">
+                        <div id="logoUploadText">
+                            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 1rem; color: var(--text-secondary);">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" x2="12" y1="15" y2="3"/>
+                            </svg>
+                            <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">Cliquez pour ajouter votre logo</h3>
+                            <p style="color: var(--text-secondary);">PNG, JPG, SVG jusqu'à 2MB</p>
+                        </div>
+                    </div>
+                    <input type="file" id="logoFile" accept="image/*" style="display: none;">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Couleur de marque</label>
+                        <input type="color" id="brandColor" class="form-input" value="#3b82f6" style="height: 50px;">
+                    </div>
+                </div>
+
+                <!-- Étape 3: Configuration Google Reviews -->
+                <div class="step" id="step3">
+                    <div class="step-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                    </div>
+                    <h2 class="step-title">Configuration Google Reviews</h2>
+                    <p class="step-description">
+                        Connectez votre page Google Business pour diriger automatiquement les avis positifs
+                    </p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Lien de votre page Google Reviews *</label>
+                        <input type="url" id="googleReviewsLink" class="form-input" required 
+                               placeholder="https://g.page/r/votre-business/review">
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                            Ce lien sera utilisé pour rediriger les clients satisfaits (4-5 étoiles) vers votre page Google Reviews.
+                        </p>
+                    </div>
+                    
+                    <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary-blue); border-radius: 0.5rem; padding: 1rem; margin-top: 1rem;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">Comment trouver votre lien ?</h4>
+                        <ol style="color: var(--text-secondary); font-size: 0.875rem; padding-left: 1rem;">
+                            <li>Recherchez votre entreprise sur Google</li>
+                            <li>Cliquez sur "Avis" ou les étoiles</li>
+                            <li>Copiez l'URL de la page qui s'ouvre</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Étape 4: Configuration SMS (si plan Boost/Pro) -->
+                <div class="step" id="step4">
+                    <div class="step-icon">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="step-title">Messages de suivi automatiques</h2>
+                    <p class="step-description">
+                        Personnalisez le message SMS qui sera envoyé automatiquement à vos clients
+                    </p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Message de remerciement personnalisé</label>
+                        <textarea id="smsMessage" class="form-input" rows="4" 
+                                  placeholder="Merci pour votre visite ! Nous espérons vous avoir satisfait. En cas de souci, n'hésitez pas à nous contacter directement.">Merci pour votre visite chez Demo Business ! 😊 Nous espérons que tout s'est bien passé. Votre avis nous intéresse beaucoup !</textarea>
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                            Ce message sera envoyé 3 jours après la visite du client.
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Délai d'envoi</label>
+                        <select id="smsDelay" class="form-input">
+                            <option value="1">1 jour après la visite</option>
+                            <option value="2">2 jours après la visite</option>
+                            <option value="3" selected>3 jours après la visite</option>
+                            <option value="5">5 jours après la visite</option>
+                            <option value="7">1 semaine après la visite</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Étape 5: Récapitulatif et finalisation -->
+                <div class="step" id="step5">
+                    <div class="completion-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                            <polyline points="20,6 9,17 4,12"/>
+                        </svg>
+                    </div>
+                    <h2 class="step-title">Configuration terminée !</h2>
+                    <p class="step-description">
+                        Félicitations ! Votre système ReviewBoost est maintenant configuré et prêt à l'emploi.
+                    </p>
+                    
+                    <div class="plan-summary">
+                        <h4 style="color: var(--text-primary); margin-bottom: 1rem;">Récapitulatif de votre configuration</h4>
+                        <div id="configSummary">
+                            <!-- Le contenu sera généré par JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <ul class="feature-checklist">
+                        <li>Votre QR Code personnalisé a été généré</li>
+                        <li>Votre formulaire de satisfaction est opérationnel</li>
+                        <li>La redirection Google Reviews est configurée</li>
+                        <li>Les messages automatiques sont activés</li>
+                        <li>Votre dashboard est prêt à afficher vos statistiques</li>
+                    </ul>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-primary" style="font-size: 1.125rem; padding: 1rem 2rem;" onclick="completeOnboarding()">
+                            🚀 Accéder à mon dashboard
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="navigation-buttons">
+                    <button class="btn btn-skip" id="prevBtn" onclick="previousStep()" style="display: none;">
+                        ← Précédent
+                    </button>
+                    <button class="btn btn-secondary" onclick="skipStep()">
+                        Passer cette étape
+                    </button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Suivant →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        let currentStepNumber = 1;
+        const totalSteps = 5;
+        let onboardingData = {};
+
+        // Vérifier l'authentification
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        // Gestion de l'upload du logo
+        document.getElementById('logoFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    Utils.showAlert('Le fichier doit faire moins de 2MB', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('logoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('logoUploadText').style.display = 'none';
+                    onboardingData.logo = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function updateProgress() {
+            const progress = (currentStepNumber / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentStep').textContent = currentStepNumber;
+        }
+
+        function showStep(stepNumber) {
+            // Cacher toutes les étapes
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Afficher l'étape courante
+            document.getElementById('step' + stepNumber).classList.add('active');
+            
+            // Gérer les boutons de navigation
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.style.display = stepNumber > 1 ? 'block' : 'none';
+            
+            if (stepNumber === totalSteps) {
+                nextBtn.style.display = 'none';
+            } else {
+                nextBtn.style.display = 'block';
+                nextBtn.textContent = 'Suivant →';
+            }
+            
+            updateProgress();
+        }
+
+        function validateCurrentStep() {
+            switch(currentStepNumber) {
+                case 1:
+                    const businessName = document.getElementById('businessName').value;
+                    const businessType = document.getElementById('businessType').value;
+                    const businessCity = document.getElementById('businessCity').value;
+                    
+                    if (!businessName || !businessType || !businessCity) {
+                        Utils.showAlert('Veuillez remplir tous les champs obligatoires', 'error');
+                        return false;
+                    }
+                    
+                    onboardingData.business = {
+                        name: businessName,
+                        type: businessType,
+                        city: businessCity,
+                        address: document.getElementById('businessAddress').value
+                    };
+                    break;
+                    
+                case 2:
+                    onboardingData.branding = {
+                        color: document.getElementById('brandColor').value,
+                        logo: onboardingData.logo || null
+                    };
+                    break;
+                    
+                case 3:
+                    const googleLink = document.getElementById('googleReviewsLink').value;
+                    if (!googleLink) {
+                        Utils.showAlert('Veuillez entrer votre lien Google Reviews', 'error');
+                        return false;
+                    }
+                    if (!googleLink.includes('google') && !googleLink.includes('g.page')) {
+                        Utils.showAlert('Veuillez entrer un lien Google valide', 'error');
+                        return false;
+                    }
+                    
+                    onboardingData.google = {
+                        reviewsLink: googleLink
+                    };
+                    break;
+                    
+                case 4:
+                    onboardingData.sms = {
+                        message: document.getElementById('smsMessage').value,
+                        delay: document.getElementById('smsDelay').value
+                    };
+                    break;
+            }
+            
+            return true;
+        }
+
+        function nextStep() {
+            if (!validateCurrentStep()) {
+                return;
+            }
+            
+            if (currentStepNumber < totalSteps) {
+                currentStepNumber++;
+                showStep(currentStepNumber);
+                
+                // Générer le récapitulatif à la dernière étape
+                if (currentStepNumber === totalSteps) {
+                    generateSummary();
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStepNumber > 1) {
+                currentStepNumber--;
+                showStep(currentStepNumber);
+            }
+        }
+
+        function skipStep() {
+            if (currentStepNumber < totalSteps) {
+                currentStepNumber++;
+                showStep(currentStepNumber);
+                
+                if (currentStepNumber === totalSteps) {
+                    generateSummary();
+                }
+            }
+        }
+
+        function generateSummary() {
+            const summary = document.getElementById('configSummary');
+            summary.innerHTML = `
+                <div style="margin-bottom: 1rem;">
+                    <strong>Entreprise :</strong> ${onboardingData.business?.name || 'Non configuré'}
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Secteur :</strong> ${onboardingData.business?.type || 'Non spécifié'}
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Ville :</strong> ${onboardingData.business?.city || 'Non spécifiée'}
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Logo :</strong> ${onboardingData.logo ? '✅ Configuré' : '❌ Non ajouté'}
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <strong>Google Reviews :</strong> ${onboardingData.google?.reviewsLink ? '✅ Configuré' : '❌ Non configuré'}
+                </div>
+                <div>
+                    <strong>Messages SMS :</strong> ${onboardingData.sms?.message ? '✅ Configuré' : '❌ Non configuré'}
+                </div>
+            `;
+        }
+
+        async function completeOnboarding() {
+            try {
+                // Simulation de sauvegarde des données
+                Utils.showAlert('Configuration sauvegardée avec succès !', 'success');
+                
+                // Redirection vers le dashboard après un délai
+                setTimeout(() => {
+                    window.location.href = '../dashboard/index.html';
+                }, 1500);
+                
+            } catch (error) {
+                Utils.showAlert('Erreur lors de la sauvegarde', 'error');
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            showStep(1);
+            
+            // Pré-remplir avec les données utilisateur si disponibles
+            const user = authManager.currentUser;
+            if (user) {
+                if (user.business) {
+                    document.getElementById('businessName').value = user.business;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

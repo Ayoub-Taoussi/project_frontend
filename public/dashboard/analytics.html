@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyses - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <style>
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .date-filter {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .filter-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+        }
+        
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-tab.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .chart-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chart-option {
+            padding: 0.25rem 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chart-option.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+        
+        .progress-chart {
+            position: relative;
+            height: 200px;
+            margin: 1rem 0;
+        }
+        
+        .progress-ring {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+        
+        .progress-ring-circle {
+            stroke: var(--border-color);
+            stroke-width: 10;
+            fill: transparent;
+            r: 60;
+            cx: 75;
+            cy: 75;
+        }
+        
+        .progress-ring-fill {
+            stroke: var(--primary-blue);
+            stroke-width: 10;
+            fill: transparent;
+            r: 60;
+            cx: 75;
+            cy: 75;
+            stroke-dasharray: 377; /* 2 * π * r */
+            stroke-dashoffset: 377;
+            transition: stroke-dashoffset 1s ease;
+            transform: rotate(-90deg);
+            transform-origin: 75px 75px;
+        }
+        
+        .progress-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        
+        .progress-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .progress-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-blue);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .metric-change {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .metric-change.positive {
+            color: var(--success-green);
+        }
+        
+        .metric-change.negative {
+            color: var(--error-red);
+        }
+        
+        .chart-canvas {
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.5rem;
+        }
+        
+        .table-analytics {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .table-header {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .rating-distribution {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .rating-stars {
+            color: #fbbf24;
+            min-width: 60px;
+        }
+        
+        .rating-bar {
+            flex: 1;
+            height: 20px;
+            background: var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .rating-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+            transition: width 0.3s ease;
+        }
+        
+        .rating-count {
+            min-width: 40px;
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .insights-section {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success-green);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .insights-title {
+            color: var(--success-green);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .insight-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .insight-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .export-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .analytics-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .date-filter {
+                justify-content: center;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.25rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="qr-code.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        </svg>
+                        QR Code
+                    </a></li>
+                    <li><a href="analytics.html" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                            <path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                        Analyses
+                    </a></li>
+                    <li><a href="sms-settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        SMS & Messages
+                    </a></li>
+                    <li><a href="settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Paramètres
+                    </a></li>
+                    <li><a href="subscription.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        </svg>
+                        Abonnement
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="analytics-header">
+                <div>
+                    <h1 class="dashboard-title">Analyses détaillées</h1>
+                    <p style="color: var(--text-secondary);">Suivez vos performances et optimisez vos résultats</p>
+                </div>
+                
+                <div class="date-filter">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="setTimeFilter('7d')">7 jours</button>
+                        <button class="filter-tab" onclick="setTimeFilter('30d')">30 jours</button>
+                        <button class="filter-tab" onclick="setTimeFilter('90d')">3 mois</button>
+                        <button class="filter-tab" onclick="setTimeFilter('1y')">1 an</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Métriques principales -->
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M12 20h.01"/>
+                            <path d="M2 8.82a15 15 0 0 1 20 0"/>
+                        </svg>
+                    </div>
+                    <div class="metric-value">1,247</div>
+                    <div class="metric-label">Scans QR Code</div>
+                    <div class="metric-change positive">+12% vs période précédente</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                    </div>
+                    <div class="metric-value">156</div>
+                    <div class="metric-label">Avis collectés</div>
+                    <div class="metric-change positive">+8% vs période précédente</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <div class="metric-value">89</div>
+                    <div class="metric-label">SMS envoyés</div>
+                    <div class="metric-change positive">+15% vs période précédente</div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                            <path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                    </div>
+                    <div class="metric-value">4.8</div>
+                    <div class="metric-label">Note moyenne</div>
+                    <div class="metric-change positive">+0.3 vs période précédente</div>
+                </div>
+            </div>
+
+            <div class="analytics-grid">
+                <!-- Graphique d'évolution -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Évolution des avis</h3>
+                        <div class="chart-options">
+                            <button class="chart-option active" onclick="setChartType('reviews')">Avis</button>
+                            <button class="chart-option" onclick="setChartType('scans')">Scans</button>
+                            <button class="chart-option" onclick="setChartType('sms')">SMS</button>
+                        </div>
+                    </div>
+                    <canvas id="evolutionChart" class="chart-canvas"></canvas>
+                </div>
+
+                <!-- Taux de conversion -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Taux de conversion</h3>
+                    </div>
+                    <div class="progress-chart">
+                        <svg class="progress-ring">
+                            <circle class="progress-ring-circle"></circle>
+                            <circle class="progress-ring-fill" id="conversionRing"></circle>
+                        </svg>
+                        <div class="progress-center">
+                            <div class="progress-value">67%</div>
+                            <div class="progress-label">Scan → Avis</div>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: var(--text-secondary); margin-top: 1rem;">
+                        67% des personnes qui scannent votre QR Code laissent un avis
+                    </p>
+                </div>
+            </div>
+
+            <!-- Distribution des notes -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Distribution des notes</h3>
+                </div>
+                
+                <div style="max-width: 400px; margin: 0 auto;">
+                    <div class="rating-distribution">
+                        <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 68%;"></div>
+                        </div>
+                        <div class="rating-count">68</div>
+                    </div>
+                    
+                    <div class="rating-distribution">
+                        <div class="rating-stars">⭐⭐⭐⭐</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 23%;"></div>
+                        </div>
+                        <div class="rating-count">23</div>
+                    </div>
+                    
+                    <div class="rating-distribution">
+                        <div class="rating-stars">⭐⭐⭐</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 7%;"></div>
+                        </div>
+                        <div class="rating-count">7</div>
+                    </div>
+                    
+                    <div class="rating-distribution">
+                        <div class="rating-stars">⭐⭐</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 2%;"></div>
+                        </div>
+                        <div class="rating-count">2</div>
+                    </div>
+                    
+                    <div class="rating-distribution">
+                        <div class="rating-stars">⭐</div>
+                        <div class="rating-bar">
+                            <div class="rating-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="rating-count">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights automatiques -->
+            <div class="insights-section">
+                <h3 class="insights-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11H1l6-6 6 6zm3 3l6-6 6 6h-6z"/>
+                        <path d="M21 21v-4.5l-7-7-7 7V21"/>
+                    </svg>
+                    Insights automatiques
+                </h3>
+                
+                <div class="insight-item">
+                    <strong>📈 Tendance positive</strong><br>
+                    Vos avis ont augmenté de 12% cette semaine. Votre note moyenne s'améliore constamment !
+                </div>
+                
+                <div class="insight-item">
+                    <strong>⏰ Meilleur moment</strong><br>
+                    Les clients sont plus enclins à laisser un avis le mardi et mercredi entre 14h et 16h.
+                </div>
+                
+                <div class="insight-item">
+                    <strong>💡 Recommandation</strong><br>
+                    Continuez à envoyer vos SMS 3 jours après la visite - c'est votre configuration la plus efficace.
+                </div>
+            </div>
+
+            <!-- Tableau analytique détaillé -->
+            <div class="table-analytics">
+                <div class="table-header">
+                    <h3 style="color: var(--text-primary); margin: 0;">Performance par canal</h3>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Canal</th>
+                            <th>Interactions</th>
+                            <th>Avis collectés</th>
+                            <th>Taux de conversion</th>
+                            <th>Note moyenne</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>QR Code</td>
+                            <td>1,247</td>
+                            <td>132</td>
+                            <td><span class="badge badge-success">10.6%</span></td>
+                            <td>4.7 ⭐</td>
+                        </tr>
+                        <tr>
+                            <td>SMS de suivi</td>
+                            <td>89</td>
+                            <td>24</td>
+                            <td><span class="badge badge-success">27.0%</span></td>
+                            <td>4.9 ⭐</td>
+                        </tr>
+                        <tr>
+                            <td>WiFi Portal</td>
+                            <td>56</td>
+                            <td>12</td>
+                            <td><span class="badge badge-warning">21.4%</span></td>
+                            <td>4.6 ⭐</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Section d'export -->
+            <div class="export-section">
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Exporter vos données</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                    Téléchargez vos rapports pour une analyse plus approfondie
+                </p>
+                
+                <div class="export-options">
+                    <button class="btn btn-secondary" onclick="exportData('csv')">
+                        📊 Export CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData('pdf')">
+                        📄 Rapport PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData('excel')">
+                        📈 Fichier Excel
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        let currentTimeFilter = '7d';
+        let currentChartType = 'reviews';
+
+        // Données simulées
+        const analyticsData = {
+            '7d': {
+                reviews: [12, 15, 8, 22, 18, 25, 19],
+                scans: [45, 52, 38, 67, 59, 73, 48],
+                sms: [8, 12, 5, 15, 11, 18, 9]
+            },
+            '30d': {
+                reviews: [156, 142, 178, 134, 167, 189, 156, 145, 178, 192, 156, 145, 167, 189, 198],
+                scans: [678, 589, 734, 567, 689, 756, 645, 598, 734, 778, 645, 598, 689, 756, 798],
+                sms: [89, 76, 95, 67, 89, 98, 85, 79, 95, 102, 85, 79, 89, 98, 106]
+            }
+        };
+
+        function setTimeFilter(period) {
+            currentTimeFilter = period;
+            
+            // Mettre à jour les onglets
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            updateCharts();
+        }
+
+        function setChartType(type) {
+            currentChartType = type;
+            
+            // Mettre à jour les boutons
+            document.querySelectorAll('.chart-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            updateCharts();
+        }
+
+        function updateCharts() {
+            drawEvolutionChart();
+            updateConversionRing();
+        }
+
+        function drawEvolutionChart() {
+            const canvas = document.getElementById('evolutionChart');
+            const ctx = canvas.getContext('2d');
+            const data = analyticsData[currentTimeFilter] ? analyticsData[currentTimeFilter][currentChartType] : analyticsData['7d'][currentChartType];
+            
+            // Nettoyer le canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Configuration
+            const width = canvas.width;
+            const height = canvas.height;
+            const margin = 40;
+            const chartWidth = width - 2 * margin;
+            const chartHeight = height - 2 * margin;
+            
+            // Fond
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Grille
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 4; i++) {
+                const y = margin + (chartHeight / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(margin, y);
+                ctx.lineTo(width - margin, y);
+                ctx.stroke();
+            }
+            
+            // Ligne de données
+            if (data && data.length > 0) {
+                const maxValue = Math.max(...data);
+                
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                data.forEach((value, index) => {
+                    const x = margin + (chartWidth / (data.length - 1)) * index;
+                    const y = height - margin - (value / maxValue) * chartHeight;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+                
+                // Points
+                ctx.fillStyle = '#3b82f6';
+                data.forEach((value, index) => {
+                    const x = margin + (chartWidth / (data.length - 1)) * index;
+                    const y = height - margin - (value / maxValue) * chartHeight;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                    ctx.fill();
+                });
+            }
+        }
+
+        function updateConversionRing() {
+            const ring = document.getElementById('conversionRing');
+            const circumference = 2 * Math.PI * 60; // r = 60
+            const percentage = 67; // 67% de conversion
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            ring.style.strokeDashoffset = offset;
+        }
+
+        function exportData(format) {
+            const data = {
+                period: currentTimeFilter,
+                totalScans: 1247,
+                totalReviews: 156,
+                averageRating: 4.8,
+                smssSent: 89,
+                conversionRate: 67
+            };
+            
+            let content, filename, contentType;
+            
+            switch(format) {
+                case 'csv':
+                    content = `Métrique,Valeur\nScans totaux,${data.totalScans}\nAvis collectés,${data.totalReviews}\nNote moyenne,${data.averageRating}\nSMS envoyés,${data.smssSent}\nTaux de conversion,${data.conversionRate}%`;
+                    filename = `analytics-${currentTimeFilter}.csv`;
+                    contentType = 'text/csv';
+                    break;
+                    
+                case 'pdf':
+                    Utils.showAlert('Génération du PDF en cours...', 'info');
+                    // Simulation d'export PDF
+                    setTimeout(() => {
+                        Utils.showAlert('Rapport PDF généré avec succès !', 'success');
+                    }, 2000);
+                    return;
+                    
+                case 'excel':
+                    Utils.showAlert('Export Excel en cours...', 'info');
+                    // Simulation d'export Excel
+                    setTimeout(() => {
+                        Utils.showAlert('Fichier Excel généré avec succès !', 'success');
+                    }, 2000);
+                    return;
+            }
+            
+            if (content) {
+                Utils.downloadFile(content, filename, contentType);
+                Utils.showAlert(`Export ${format.toUpperCase()} téléchargé`, 'success');
+            }
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCharts();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès WiFi - ReviewBoost</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1b3a 0%, #2d1b69 50%, #1a1b3a 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .wifi-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .wifi-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .business-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: none;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .rating-container {
+            margin: 2rem 0;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .rating-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wifi-info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .connecting-animation {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fecaca;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .wifi-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stars {
+                gap: 0.25rem;
+            }
+            
+            .star {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wifi-container">
+        <!-- Formulaire principal -->
+        <div id="wifiForm">
+            <div class="wifi-icon">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M12 20h.01"/>
+                    <path d="M2 8.82a15 15 0 0 1 20 0"/>
+                    <path d="M5 12.859a10 10 0 0 1 14 0"/>
+                    <path d="M8.5 16.429a5 5 0 0 1 7 0"/>
+                </svg>
+            </div>
+
+            <img id="businessLogo" class="business-logo" alt="Logo" />
+            
+            <h1 id="businessName">Accès WiFi Gratuit</h1>
+            <p class="subtitle">
+                Pour accéder au WiFi, merci de remplir ce court formulaire et de nous donner votre avis
+            </p>
+
+            <form id="accessForm">
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" id="email" class="form-input" required placeholder="votre@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Téléphone *</label>
+                    <input type="tel" id="phone" class="form-input" required placeholder="+33 6 12 34 56 78">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Prénom</label>
+                    <input type="text" id="firstName" class="form-input" placeholder="Votre prénom">
+                </div>
+
+                <div class="rating-container">
+                    <label class="form-label">Comment évaluez-vous votre expérience ? *</label>
+                    <div class="stars" id="ratingStars">
+                        <span class="star" data-rating="1">⭐</span>
+                        <span class="star" data-rating="2">⭐</span>
+                        <span class="star" data-rating="3">⭐</span>
+                        <span class="star" data-rating="4">⭐</span>
+                        <span class="star" data-rating="5">⭐</span>
+                    </div>
+                    <p class="rating-label" id="ratingLabel">Cliquez sur les étoiles pour noter</p>
+                    <input type="hidden" id="rating" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Commentaire (optionnel)</label>
+                    <textarea id="comment" class="form-input" rows="3" placeholder="Partagez votre expérience..."></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="consent" required>
+                    <label for="consent">
+                        J'accepte de recevoir des offres spéciales et des nouvelles de cet établissement par email ou SMS. 
+                        Mes données seront traitées conformément à la politique de confidentialité.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    🔐 Accéder au WiFi
+                </button>
+            </form>
+
+            <div class="wifi-info">
+                <strong>Informations WiFi :</strong><br>
+                • Réseau : WiFi-Guest<br>
+                • Accès gratuit et illimité<br>
+                • Connexion sécurisée
+            </div>
+        </div>
+
+        <!-- Animation de connexion -->
+        <div id="connectingAnimation" class="connecting-animation">
+            <div class="spinner"></div>
+            <h2>Connexion en cours...</h2>
+            <p>Merci pour votre avis ! Nous vous connectons au WiFi.</p>
+        </div>
+
+        <!-- Message de succès -->
+        <div id="successMessage" class="success-message">
+            <div class="success-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20,6 9,17 4,12"/>
+                </svg>
+            </div>
+            <h2>Connecté avec succès !</h2>
+            <p>Vous êtes maintenant connecté au WiFi. Merci pour votre avis !</p>
+            <div class="wifi-info" style="margin-top: 1rem;">
+                <strong>WiFi activé</strong><br>
+                Vous pouvez maintenant naviguer librement sur Internet.
+            </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div id="errorMessage" class="error-message">
+            Une erreur s'est produite. Veuillez réessayer ou contacter le personnel.
+        </div>
+    </div>
+
+    <script>
+        const backend = "https://reviewboost-backend.onrender.com";
+        const uid = new URLSearchParams(window.location.search).get('uid') || 'demo';
+        let selectedRating = 0;
+        let businessInfo = {};
+
+        // Charger les informations de l'entreprise
+        async function loadBusinessInfo() {
+            try {
+                const response = await fetch(`${backend}/public/user/${uid}`);
+                if (response.ok) {
+                    businessInfo = await response.json();
+                    
+                    if (businessInfo.businessName) {
+                        document.getElementById('businessName').textContent = `WiFi - ${businessInfo.businessName}`;
+                    }
+                    
+                    if (businessInfo.logoUrl) {
+                        const logo = document.getElementById('businessLogo');
+                        logo.src = businessInfo.logoUrl;
+                        logo.style.display = 'block';
+                    }
+                    
+                    if (businessInfo.customColor) {
+                        document.documentElement.style.setProperty('--brand-color', businessInfo.customColor);
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des infos business:', error);
+            }
+        }
+
+        // Gestion des étoiles
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBusinessInfo();
+            
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            const ratingLabel = document.getElementById('ratingLabel');
+            
+            const ratingLabels = {
+                1: "Très insatisfait",
+                2: "Insatisfait", 
+                3: "Correct",
+                4: "Satisfait",
+                5: "Très satisfait"
+            };
+            
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.dataset.rating);
+                    selectedRating = rating;
+                    ratingInput.value = rating;
+                    
+                    // Mettre à jour l'affichage des étoiles
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    ratingLabel.textContent = ratingLabels[rating];
+                });
+                
+                star.addEventListener('mouseenter', () => {
+                    const rating = parseInt(star.dataset.rating);
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.style.color = '#fbbf24';
+                        } else {
+                            s.style.color = 'rgba(255, 255, 255, 0.3)';
+                        }
+                    });
+                });
+            });
+            
+            // Reset au survol
+            document.querySelector('.stars').addEventListener('mouseleave', () => {
+                stars.forEach((s, index) => {
+                    if (index < selectedRating) {
+                        s.style.color = '#fbbf24';
+                    } else {
+                        s.style.color = 'rgba(255, 255, 255, 0.3)';
+                    }
+                });
+            });
+        });
+
+        // Soumission du formulaire
+        document.getElementById('accessForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                userId: uid,
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                firstName: formData.get('firstName'),
+                rating: parseInt(formData.get('rating')),
+                comment: formData.get('comment'),
+                consent: formData.has('consent'),
+                source: 'wifi'
+            };
+            
+            // Validation
+            if (!data.email || !data.phone || !data.rating) {
+                showError('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            if (!data.consent) {
+                showError('Vous devez accepter les conditions pour accéder au WiFi');
+                return;
+            }
+            
+            // Désactiver le bouton et afficher l'animation
+            document.getElementById('submitBtn').disabled = true;
+            showConnecting();
+            
+            try {
+                // Envoyer les données au backend
+                const response = await fetch(`${backend}/wifi-feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Simulation d'un délai de connexion
+                    setTimeout(() => {
+                        // Si note >= 4, rediriger vers Google Reviews
+                        if (data.rating >= 4 && businessInfo.googleReviewLink) {
+                            window.open(businessInfo.googleReviewLink, '_blank');
+                        }
+                        
+                        showSuccess();
+                    }, 3000);
+                } else {
+                    showError('Erreur lors de l\'enregistrement. Veuillez réessayer.');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion. Veuillez réessayer.');
+            }
+        });
+
+        function showConnecting() {
+            document.getElementById('wifiForm').style.display = 'none';
+            document.getElementById('connectingAnimation').style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function showSuccess() {
+            document.getElementById('wifiForm').style.display = 'none';
+            document.getElementById('connectingAnimation').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Réactiver le bouton
+            document.getElementById('submitBtn').disabled = false;
+            
+            // Cacher l'erreur après 5 secondes
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Validation email en temps réel
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                this.style.borderColor = '#ef4444';
+                showError('Veuillez entrer une adresse email valide');
+            } else {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }
+        });
+
+        // Validation téléphone en temps réel
+        document.getElementById('phone').addEventListener('blur', function() {
+            const phone = this.value;
+            const phoneRegex = /^[+]?[\d\s-()]{8,}$/;
+            
+            if (phone && !phoneRegex.test(phone)) {
+                this.style.borderColor = '#ef4444';
+                showError('Veuillez entrer un numéro de téléphone valide');
+            } else {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <style>
+        .qr-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .qr-preview {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .qr-code-image {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qr-settings {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .color-picker {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .download-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .instructions h3 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .instructions ol {
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .qr-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.25rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="qr-code.html" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                            <rect width="5" height="5" x="16" y="3" rx="1"/>
+                            <rect width="5" height="5" x="3" y="16" rx="1"/>
+                        </svg>
+                        QR Code
+                    </a></li>
+                    <li><a href="analytics.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                            <path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                        Analyses
+                    </a></li>
+                    <li><a href="sms-settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        SMS & Messages
+                    </a></li>
+                    <li><a href="settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Paramètres
+                    </a></li>
+                    <li><a href="subscription.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        </svg>
+                        Abonnement
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">QR Code</h1>
+                    <p style="color: var(--text-secondary);">Générez et personnalisez votre QR Code</p>
+                </div>
+            </div>
+
+            <div class="qr-container">
+                <!-- Aperçu du QR Code -->
+                <div class="qr-preview">
+                    <h3 style="color: #1a1b3a; margin-bottom: 1rem;">Aperçu de votre QR Code</h3>
+                    <div class="qr-code-image">
+                        <img id="qrCodeImage" src="" alt="QR Code" style="max-width: 100%; max-height: 100%;">
+                    </div>
+                    <p style="color: #666; font-size: 0.875rem; margin-bottom: 1rem;">
+                        Scannez ce code pour tester votre formulaire
+                    </p>
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; color: #1a1b3a;">
+                        <strong>URL du formulaire :</strong><br>
+                        <span id="qrUrl" style="font-size: 0.875rem; word-break: break-all;"></span>
+                    </div>
+                </div>
+
+                <!-- Paramètres du QR Code -->
+                <div class="qr-settings">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Personnalisation</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nom de votre entreprise</label>
+                        <input type="text" id="businessName" class="form-input" placeholder="Mon Restaurant" value="Demo Business">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Couleur du QR Code</label>
+                        <input type="color" id="qrColor" class="color-picker" value="#000000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Taille du QR Code</label>
+                        <select id="qrSize" class="form-input">
+                            <option value="200">200x200 px (Petit)</option>
+                            <option value="300" selected>300x300 px (Moyen)</option>
+                            <option value="400">400x400 px (Grand)</option>
+                            <option value="500">500x500 px (Très grand)</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="generateQR()" style="width: 100%; margin-bottom: 1rem;">
+                        Régénérer le QR Code
+                    </button>
+                    
+                    <button class="btn btn-secondary" onclick="copyQRUrl()" style="width: 100%;">
+                        Copier le lien
+                    </button>
+                </div>
+            </div>
+
+            <!-- Boutons de téléchargement -->
+            <div class="download-buttons">
+                <button class="btn btn-primary" onclick="downloadQR('png')">
+                    📥 Télécharger PNG
+                </button>
+                <button class="btn btn-secondary" onclick="downloadQR('svg')">
+                    📥 Télécharger SVG
+                </button>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <h3>Comment utiliser votre QR Code</h3>
+                <ol>
+                    <li>Téléchargez votre QR Code personnalisé</li>
+                    <li>Imprimez-le et placez-le dans votre établissement (comptoir, table, vitrine)</li>
+                    <li>Les clients scannent le code avec leur téléphone</li>
+                    <li>Ils sont dirigés vers votre formulaire de satisfaction</li>
+                    <li>Les avis positifs (4-5 étoiles) sont redirigés vers Google</li>
+                    <li>Les avis négatifs (1-3 étoiles) restent privés pour vous permettre d'améliorer</li>
+                </ol>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        let currentUser = authManager.currentUser;
+        let qrUrl = `https://reviewboost-backend.onrender.com/f/${currentUser ? currentUser.id : 'demo'}`;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('qrUrl').textContent = qrUrl;
+            generateQR();
+        });
+
+        function generateQR() {
+            const size = document.getElementById('qrSize').value;
+            const color = document.getElementById('qrColor').value.substring(1); // Enlever le #
+            
+            // Utiliser l'API QR Server pour générer le QR Code
+            const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(qrUrl)}&color=${color}&bgcolor=ffffff&margin=10`;
+            
+            document.getElementById('qrCodeImage').src = qrImageUrl;
+        }
+
+        function copyQRUrl() {
+            Utils.copyToClipboard(qrUrl);
+        }
+
+        function downloadQR(format) {
+            const size = document.getElementById('qrSize').value;
+            const color = document.getElementById('qrColor').value.substring(1);
+            const businessName = document.getElementById('businessName').value || 'ReviewBoost';
+            
+            let downloadUrl;
+            
+            if (format === 'png') {
+                downloadUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(qrUrl)}&color=${color}&bgcolor=ffffff&margin=10&format=png`;
+            } else if (format === 'svg') {
+                downloadUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(qrUrl)}&color=${color}&bgcolor=ffffff&margin=10&format=svg`;
+            }
+            
+            // Créer un lien de téléchargement
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `qr-code-${businessName.toLowerCase().replace(/\s+/g, '-')}.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            Utils.showAlert(`QR Code téléchargé en ${format.toUpperCase()}`, 'success');
+        }
+
+        // Écouter les changements pour régénérer automatiquement
+        document.getElementById('qrColor').addEventListener('change', generateQR);
+        document.getElementById('qrSize').addEventListener('change', generateQR);
+    </script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <style>
+        .settings-grid {
+            display: grid;
+            gap: 2rem;
+            max-width: 800px;
+        }
+        
+        .settings-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .logo-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .logo-upload:hover {
+            border-color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .logo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: none;
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .color-option:hover,
+        .color-option.selected {
+            border-color: white;
+            transform: scale(1.1);
+        }
+        
+        .danger-zone {
+            border: 1px solid var(--error-red);
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .danger-zone .section-title {
+            color: var(--error-red);
+            border-bottom-color: var(--error-red);
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.25rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="qr-code.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                            <rect width="5" height="5" x="16" y="3" rx="1"/>
+                            <rect width="5" height="5" x="3" y="16" rx="1"/>
+                        </svg>
+                        QR Code
+                    </a></li>
+                    <li><a href="analytics.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                            <path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                        Analyses
+                    </a></li>
+                    <li><a href="sms-settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        SMS & Messages
+                    </a></li>
+                    <li><a href="settings.html" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="m12 1 1.17 2.83L16 5l-1.17 2.83L16 10l-2.83-1.17L12 11l-1.17-2.83L8 10l1.17-2.83L8 5l2.83 1.17z"/>
+                        </svg>
+                        Paramètres
+                    </a></li>
+                    <li><a href="subscription.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
+                        Abonnement
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">Paramètres</h1>
+                    <p style="color: var(--text-secondary);">Configurez votre compte et votre entreprise</p>
+                </div>
+            </div>
+
+            <div class="settings-grid">
+                <!-- Informations personnelles -->
+                <div class="settings-section">
+                    <h3 class="section-title">Informations personnelles</h3>
+                    <form id="personalInfoForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Nom complet</label>
+                                <input type="text" id="fullName" class="form-input" value="Demo User">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email</label>
+                                <input type="email" id="email" class="form-input" value="demo@reviewboost.com" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Téléphone</label>
+                            <input type="tel" id="phone" class="form-input" placeholder="+33 1 23 45 67 89">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    </form>
+                </div>
+
+                <!-- Informations entreprise -->
+                <div class="settings-section">
+                    <h3 class="section-title">Informations entreprise</h3>
+                    <form id="businessInfoForm">
+                        <div class="form-group">
+                            <label class="form-label">Nom de l'entreprise</label>
+                            <input type="text" id="businessName" class="form-input" value="Demo Business">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Secteur d'activité</label>
+                                <select id="businessType" class="form-input">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="restaurant">Restaurant</option>
+                                    <option value="salon">Salon de coiffure</option>
+                                    <option value="medical">Médical/Dentaire</option>
+                                    <option value="retail">Commerce de détail</option>
+                                    <option value="automotive">Automobile</option>
+                                    <option value="fitness">Fitness/Sport</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ville</label>
+                                <input type="text" id="city" class="form-input" placeholder="Paris">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Adresse complète</label>
+                            <textarea id="address" class="form-input" rows="3" placeholder="123 Rue de la République, 75001 Paris"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                    </form>
+                </div>
+
+                <!-- Logo et branding -->
+                <div class="settings-section">
+                    <h3 class="section-title">Logo et branding</h3>
+                    <div class="form-group">
+                        <label class="form-label">Logo de l'entreprise</label>
+                        <div class="logo-upload" onclick="document.getElementById('logoInput').click()">
+                            <img id="logoPreview" class="logo-preview" alt="Logo preview">
+                            <div id="logoUploadText">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 40px; height: 40px; margin: 0 auto 1rem; color: var(--text-secondary);">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7,10 12,15 17,10"/>
+                                    <line x1="12" x2="12" y1="15" y2="3"/>
+                                </svg>
+                                <p style="color: var(--text-secondary);">Cliquez pour uploader votre logo</p>
+                                <p style="color: var(--text-secondary); font-size: 0.875rem;">PNG, JPG jusqu'à 2MB</p>
+                            </div>
+                        </div>
+                        <input type="file" id="logoInput" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Couleur de marque</label>
+                        <input type="color" id="brandColor" class="form-input" value="#3b82f6" style="height: 40px;">
+                        <div class="color-palette">
+                            <div class="color-option" style="background: #3b82f6;" data-color="#3b82f6"></div>
+                            <div class="color-option" style="background: #10b981;" data-color="#10b981"></div>
+                            <div class="color-option" style="background: #f59e0b;" data-color="#f59e0b"></div>
+                            <div class="color-option" style="background: #ef4444;" data-color="#ef4444"></div>
+                            <div class="color-option" style="background: #8b5cf6;" data-color="#8b5cf6"></div>
+                            <div class="color-option" style="background: #06b6d4;" data-color="#06b6d4"></div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="saveBranding()">Sauvegarder</button>
+                </div>
+
+                <!-- Configuration Google Reviews -->
+                <div class="settings-section">
+                    <h3 class="section-title">Configuration Google Reviews</h3>
+                    <div class="form-group">
+                        <label class="form-label">Lien Google Reviews</label>
+                        <input type="url" id="googleReviewLink" class="form-input" placeholder="https://g.page/r/...">
+                        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.5rem;">
+                            Ce lien sera utilisé pour rediriger les clients satisfaits vers votre page Google Reviews.
+                        </p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="findGoogleLink()">
+                        🔍 Comment trouver mon lien Google Reviews ?
+                    </button>
+                    <button class="btn btn-primary" onclick="saveGoogleLink()">Sauvegarder</button>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-section">
+                    <h3 class="section-title">Notifications</h3>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <label for="emailNotifications">Recevoir les notifications par email</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="smsNotifications">
+                            <label for="smsNotifications">Recevoir les notifications par SMS</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="reviewNotifications" checked>
+                            <label for="reviewNotifications">Être notifié des nouveaux avis</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveNotifications()">Sauvegarder</button>
+                </div>
+
+                <!-- Changement de mot de passe -->
+                <div class="settings-section">
+                    <h3 class="section-title">Sécurité</h3>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label class="form-label">Mot de passe actuel</label>
+                            <input type="password" id="currentPassword" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nouveau mot de passe</label>
+                            <input type="password" id="newPassword" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirmer le nouveau mot de passe</label>
+                            <input type="password" id="confirmPassword" class="form-input">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                    </form>
+                </div>
+
+                <!-- Zone de danger -->
+                <div class="settings-section danger-zone">
+                    <h3 class="section-title">Zone de danger</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        Ces actions sont irréversibles. Procédez avec prudence.
+                    </p>
+                    <button class="btn" style="background: var(--error-red); color: white; margin-right: 1rem;" onclick="deleteAccount()">
+                        Supprimer mon compte
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportData()">
+                        Exporter mes données
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        // Gestion de l'upload du logo
+        document.getElementById('logoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('logoPreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('logoUploadText').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Gestion de la palette de couleurs
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const color = this.getAttribute('data-color');
+                document.getElementById('brandColor').value = color;
+                
+                // Mettre à jour la sélection visuelle
+                document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        // Formulaires
+        handleFormSubmit('personalInfoForm', async (data) => {
+            Utils.showAlert('Informations personnelles sauvegardées', 'success');
+        });
+
+        handleFormSubmit('businessInfoForm', async (data) => {
+            Utils.showAlert('Informations entreprise sauvegardées', 'success');
+        });
+
+        handleFormSubmit('passwordForm', async (data) => {
+            if (data.newPassword !== data.confirmPassword) {
+                Utils.showAlert('Les mots de passe ne correspondent pas', 'error');
+                return;
+            }
+            if (!Utils.validatePassword(data.newPassword)) {
+                Utils.showAlert('Le mot de passe doit contenir au moins 8 caractères', 'error');
+                return;
+            }
+            Utils.showAlert('Mot de passe changé avec succès', 'success');
+        });
+
+        function saveBranding() {
+            Utils.showAlert('Paramètres de marque sauvegardés', 'success');
+        }
+
+        function saveGoogleLink() {
+            const link = document.getElementById('googleReviewLink').value;
+            if (link && !link.includes('google')) {
+                Utils.showAlert('Veuillez entrer un lien Google Reviews valide', 'error');
+                return;
+            }
+            Utils.showAlert('Lien Google Reviews sauvegardé', 'success');
+        }
+
+        function findGoogleLink() {
+            alert('Pour trouver votre lien Google Reviews :\n\n1. Recherchez votre entreprise sur Google\n2. Cliquez sur "Avis" ou les étoiles\n3. Copiez l\'URL de la page\n4. Collez-la dans le champ ci-dessus');
+        }
+
+        function saveNotifications() {
+            Utils.showAlert('Préférences de notifications sauvegardées', 'success');
+        }
+
+        function exportData() {
+            // Simulation d'export de données
+            const data = {
+                business: 'Demo Business',
+                reviews: 156,
+                exportDate: new Date().toISOString()
+            };
+            
+            Utils.downloadFile(JSON.stringify(data, null, 2), 'reviewboost-data.json', 'application/json');
+            Utils.showAlert('Données exportées', 'success');
+        }
+
+        function deleteAccount() {
+            if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+                if (confirm('Dernière confirmation : supprimer définitivement le compte ?')) {
+                    Utils.showAlert('Compte supprimé', 'success');
+                    setTimeout(() => {
+                        authManager.logout();
+                    }, 2000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

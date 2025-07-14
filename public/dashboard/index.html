@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.25rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="index.html" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            <polyline points="9,22 9,12 15,12 15,22"/>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="qr-code.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                            <rect width="5" height="5" x="16" y="3" rx="1"/>
+                            <rect width="5" height="5" x="3" y="16" rx="1"/>
+                            <path d="m21 16-3.5-3.5-2.5 2.5"/>
+                            <path d="m21 21-3.5-3.5-2.5 2.5"/>
+                            <path d="m21 11-3.5-3.5-2.5 2.5"/>
+                        </svg>
+                        QR Code
+                    </a></li>
+                    <li><a href="analytics.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                            <path d="m19 9-5 5-4-4-3 3"/>
+                        </svg>
+                        Analyses
+                    </a></li>
+                    <li><a href="sms-settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        SMS & Messages
+                    </a></li>
+                    <li><a href="settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="m12 1 1.17 2.83L16 5l-1.17 2.83L16 10l-2.83-1.17L12 11l-1.17-2.83L8 10l1.17-2.83L8 5l2.83 1.17z"/>
+                        </svg>
+                        Paramètres
+                    </a></li>
+                    <li><a href="subscription.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
+                        Abonnement
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">Dashboard</h1>
+                    <p style="color: var(--text-secondary);">Bienvenue dans votre tableau de bord ReviewBoost</p>
+                </div>
+                <button class="btn btn-primary" onclick="logout()">Déconnexion</button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalScans">0</div>
+                    <div class="stat-label">Total des scans QR</div>
+                    <div class="stat-change positive">+12% ce mois</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="avgRating">0.0</div>
+                    <div class="stat-label">Note moyenne</div>
+                    <div class="stat-change positive">+0.3 ce mois</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="totalReviews">0</div>
+                    <div class="stat-label">Avis collectés</div>
+                    <div class="stat-change positive">+8 cette semaine</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="smsSent">0</div>
+                    <div class="stat-label">SMS envoyés</div>
+                    <div class="stat-change positive">+15 ce mois</div>
+                </div>
+            </div>
+
+            <!-- Chart Container -->
+            <div class="chart-container">
+                <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Évolution des avis</h3>
+                <canvas id="reviewsChart" width="800" height="300"></canvas>
+            </div>
+
+            <!-- Recent Reviews Table -->
+            <div class="table-container">
+                <h3 style="padding: 1.5rem 1.5rem 0; color: var(--text-primary);">Avis récents</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Note</th>
+                            <th>Source</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentReviews">
+                        <!-- Les données seront injectées par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        // Vérifier l'authentification
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        // Données de démonstration
+        const mockData = {
+            totalScans: 1247,
+            avgRating: 4.8,
+            totalReviews: 156,
+            smsSent: 89,
+            recentReviews: [
+                { date: '2025-07-14', client: 'Marie L.', rating: 5, source: 'QR', status: 'Publié' },
+                { date: '2025-07-14', client: 'Pierre M.', rating: 4, source: 'QR', status: 'Publié' },
+                { date: '2025-07-13', client: 'Sophie D.', rating: 5, source: 'SMS', status: 'Publié' },
+                { date: '2025-07-13', client: 'Jean B.', rating: 3, source: 'QR', status: 'Privé' },
+                { date: '2025-07-12', client: 'Anne C.', rating: 5, source: 'QR', status: 'Publié' }
+            ]
+        };
+
+        // Charger les données
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardData();
+            loadRecentReviews();
+            createChart();
+        });
+
+        function loadDashboardData() {
+            document.getElementById('totalScans').textContent = Utils.formatNumber(mockData.totalScans);
+            document.getElementById('avgRating').textContent = mockData.avgRating.toFixed(1);
+            document.getElementById('totalReviews').textContent = Utils.formatNumber(mockData.totalReviews);
+            document.getElementById('smsSent').textContent = Utils.formatNumber(mockData.smsSent);
+        }
+
+        function loadRecentReviews() {
+            const tbody = document.getElementById('recentReviews');
+            tbody.innerHTML = mockData.recentReviews.map(review => `
+                <tr>
+                    <td>${Utils.formatDate(review.date)}</td>
+                    <td>${review.client}</td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <span style="margin-right: 0.5rem;">${review.rating}</span>
+                            <div style="color: #fbbf24;">${'⭐'.repeat(review.rating)}</div>
+                        </div>
+                    </td>
+                    <td>${review.source}</td>
+                    <td>
+                        <span class="badge ${review.status === 'Publié' ? 'badge-success' : 'badge-warning'}">
+                            ${review.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function createChart() {
+            const canvas = document.getElementById('reviewsChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Données simulées pour le graphique
+            const data = [12, 18, 15, 22, 28, 25, 32];
+            const labels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+            
+            // Dessiner un graphique simple
+            const width = canvas.width;
+            const height = canvas.height;
+            const margin = 40;
+            const chartWidth = width - 2 * margin;
+            const chartHeight = height - 2 * margin;
+            
+            // Fond
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Grille
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+            
+            for (let i = 0; i <= 4; i++) {
+                const y = margin + (chartHeight / 4) * i;
+                ctx.beginPath();
+                ctx.moveTo(margin, y);
+                ctx.lineTo(width - margin, y);
+                ctx.stroke();
+            }
+            
+            // Ligne de données
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            data.forEach((value, index) => {
+                const x = margin + (chartWidth / (data.length - 1)) * index;
+                const y = height - margin - (value / 35) * chartHeight;
+                
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // Points
+            ctx.fillStyle = '#3b82f6';
+            data.forEach((value, index) => {
+                const x = margin + (chartWidth / (data.length - 1)) * index;
+                const y = height - margin - (value / 35) * chartHeight;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+            
+            // Labels
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            
+            labels.forEach((label, index) => {
+                const x = margin + (chartWidth / (data.length - 1)) * index;
+                ctx.fillText(label, x, height - 10);
+            });
+        }
+
+        function logout() {
+            authManager.logout();
+        }
+    </script>
+</body>
+</html>
