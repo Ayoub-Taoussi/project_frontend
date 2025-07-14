@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre avis nous intéresse</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1b3a 0%, #2d1b69 50%, #1a1b3a 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .business-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            display: none;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .rating-container {
+            margin: 2rem 0;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .rating-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            text-align: left;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-group label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            line-height: 1.4;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+
+        .google-redirect {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .private-feedback {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fecaca;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #3b82f6;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .powered-by {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stars {
+                gap: 0.25rem;
+            }
+            
+            .star {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Formulaire principal -->
+        <div id="feedbackForm">
+            <img id="businessLogo" class="business-logo" alt="Logo" />
+            
+            <h1 id="businessName">Votre avis nous intéresse</h1>
+            <p class="subtitle">
+                Aidez-nous à améliorer notre service en partageant votre expérience
+            </p>
+
+            <form id="satisfactionForm">
+                <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input type="email" id="email" class="form-input" required placeholder="votre@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Prénom *</label>
+                    <input type="text" id="firstName" class="form-input" required placeholder="Votre prénom">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Téléphone (optionnel)</label>
+                    <input type="tel" id="phone" class="form-input" placeholder="+33 6 12 34 56 78">
+                </div>
+
+                <div class="rating-container">
+                    <label class="form-label">Comment évaluez-vous votre expérience ? *</label>
+                    <div class="stars" id="ratingStars">
+                        <span class="star" data-rating="1">⭐</span>
+                        <span class="star" data-rating="2">⭐</span>
+                        <span class="star" data-rating="3">⭐</span>
+                        <span class="star" data-rating="4">⭐</span>
+                        <span class="star" data-rating="5">⭐</span>
+                    </div>
+                    <p class="rating-label" id="ratingLabel">Cliquez sur les étoiles pour noter</p>
+                    <input type="hidden" id="rating" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Commentaire (optionnel)</label>
+                    <textarea id="comment" class="form-input" rows="4" placeholder="Partagez votre expérience en détail..."></textarea>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="consent" required>
+                    <label for="consent">
+                        J'accepte de recevoir des offres spéciales et des nouvelles de cet établissement. 
+                        Mes données seront traitées conformément à la politique de confidentialité.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    ✨ Envoyer mon avis
+                </button>
+            </form>
+        </div>
+
+        <!-- Message de succès pour avis positif -->
+        <div id="positiveSuccess" class="success-message">
+            <div class="success-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20,6 9,17 4,12"/>
+                </svg>
+            </div>
+            <h2>Merci pour votre excellent avis ! 🌟</h2>
+            <p style="margin: 1rem 0;">
+                Votre retour positif nous fait chaud au cœur. Voulez-vous nous aider en partageant votre expérience sur Google ?
+            </p>
+            
+            <div class="google-redirect">
+                <h3 style="margin-bottom: 0.5rem;">🎁 Bonus : Laissez un avis Google</h3>
+                <p style="font-size: 0.875rem; margin-bottom: 1rem;">
+                    Aidez d'autres personnes à nous découvrir en laissant le même avis sur Google Reviews
+                </p>
+                <button class="btn" onclick="redirectToGoogle()" style="margin-top: 0;">
+                    🔗 Laisser un avis Google
+                </button>
+            </div>
+
+            <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7); margin-top: 1rem;">
+                Merci encore pour votre confiance !
+            </p>
+        </div>
+
+        <!-- Message de succès pour avis négatif -->
+        <div id="privateSuccess" class="success-message">
+            <div class="success-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <polyline points="20,6 9,17 4,12"/>
+                </svg>
+            </div>
+            <h2>Merci pour votre retour 🙏</h2>
+            
+            <div class="private-feedback">
+                <h3 style="margin-bottom: 0.5rem; color: white;">Nous prenons votre avis au sérieux</h3>
+                <p style="font-size: 0.875rem; margin-bottom: 1rem; color: rgba(255, 255, 255, 0.9);">
+                    Votre commentaire restera privé et nous aidera à améliorer notre service. 
+                    Notre équipe va examiner vos suggestions et vous contacter si nécessaire.
+                </p>
+                <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.8);">
+                    📞 Besoin d'une réponse immédiate ? N'hésitez pas à nous appeler directement.
+                </p>
+            </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div id="errorMessage" class="error-message">
+            Une erreur s'est produite. Veuillez réessayer.
+        </div>
+
+        <!-- Powered by -->
+        <div class="powered-by">
+            Powered by ReviewBoost ⚡
+        </div>
+    </div>
+
+    <script>
+        const backend = "https://reviewboost-backend.onrender.com";
+        const uid = new URLSearchParams(window.location.search).get('uid') || 'demo';
+        let selectedRating = 0;
+        let businessInfo = {};
+
+        // Charger les informations de l'entreprise
+        async function loadBusinessInfo() {
+            try {
+                const response = await fetch(`${backend}/public/user/${uid}`);
+                if (response.ok) {
+                    businessInfo = await response.json();
+                    
+                    if (businessInfo.businessName) {
+                        document.getElementById('businessName').textContent = businessInfo.businessName;
+                    }
+                    
+                    if (businessInfo.logoUrl) {
+                        const logo = document.getElementById('businessLogo');
+                        logo.src = businessInfo.logoUrl;
+                        logo.style.display = 'block';
+                    }
+                    
+                    if (businessInfo.customColor) {
+                        document.documentElement.style.setProperty('--brand-color', businessInfo.customColor);
+                    }
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des infos business:', error);
+            }
+        }
+
+        // Gestion des étoiles
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBusinessInfo();
+            
+            const stars = document.querySelectorAll('.star');
+            const ratingInput = document.getElementById('rating');
+            const ratingLabel = document.getElementById('ratingLabel');
+            
+            const ratingLabels = {
+                1: "Très insatisfait 😞",
+                2: "Insatisfait 😐", 
+                3: "Correct 🙂",
+                4: "Satisfait 😊",
+                5: "Très satisfait 🤩"
+            };
+            
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.dataset.rating);
+                    selectedRating = rating;
+                    ratingInput.value = rating;
+                    
+                    // Mettre à jour l'affichage des étoiles
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                    
+                    ratingLabel.textContent = ratingLabels[rating];
+                });
+                
+                star.addEventListener('mouseenter', () => {
+                    const rating = parseInt(star.dataset.rating);
+                    stars.forEach((s, index) => {
+                        if (index < rating) {
+                            s.style.color = '#fbbf24';
+                        } else {
+                            s.style.color = 'rgba(255, 255, 255, 0.3)';
+                        }
+                    });
+                });
+            });
+            
+            // Reset au survol
+            document.querySelector('.stars').addEventListener('mouseleave', () => {
+                stars.forEach((s, index) => {
+                    if (index < selectedRating) {
+                        s.style.color = '#fbbf24';
+                    } else {
+                        s.style.color = 'rgba(255, 255, 255, 0.3)';
+                    }
+                });
+            });
+        });
+
+        // Soumission du formulaire
+        document.getElementById('satisfactionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                userId: uid,
+                email: formData.get('email'),
+                firstName: formData.get('firstName'),
+                phone: formData.get('phone'),
+                rating: parseInt(formData.get('rating')),
+                comment: formData.get('comment'),
+                consent: formData.has('consent'),
+                source: 'qr_form'
+            };
+            
+            // Validation
+            if (!data.email || !data.firstName || !data.rating) {
+                showError('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            if (!data.consent) {
+                showError('Vous devez accepter les conditions pour continuer');
+                return;
+            }
+            
+            // Désactiver le bouton et afficher le loading
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.innerHTML = '<div class="loading-spinner"></div>';
+            submitBtn.disabled = true;
+            
+            try {
+                // Envoyer les données au backend
+                const response = await fetch(`${backend}/feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Masquer le formulaire
+                    document.getElementById('feedbackForm').style.display = 'none';
+                    
+                    // Afficher le bon message selon la note
+                    if (data.rating >= 4) {
+                        document.getElementById('positiveSuccess').style.display = 'block';
+                    } else {
+                        document.getElementById('privateSuccess').style.display = 'block';
+                    }
+                } else {
+                    throw new Error('Erreur serveur');
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur lors de l\'envoi. Veuillez réessayer.');
+                
+                // Réactiver le bouton
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function redirectToGoogle() {
+            if (businessInfo.googleReviewLink) {
+                window.open(businessInfo.googleReviewLink, '_blank');
+            } else {
+                // Fallback : recherche Google de l'entreprise
+                const searchQuery = encodeURIComponent(businessInfo.businessName || 'business reviews');
+                window.open(`https://www.google.com/search?q=${searchQuery}+avis`, '_blank');
+            }
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Cacher l'erreur après 5 secondes
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Validation email en temps réel
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (email && !emailRegex.test(email)) {
+                this.style.borderColor = '#ef4444';
+                showError('Veuillez entrer une adresse email valide');
+            } else {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            }
+        });
+    </script>
+</body>
+</html>
