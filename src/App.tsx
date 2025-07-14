@@ -13,13 +13,21 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-900">
       <Header />
-      <Hero />
-      <TrustedBy />
-      <Features />
-      <Pricing />
-      <WhySystemWorks />
-      <GrowthStats />
-      <Testimonials />
+      <main>
+        <Hero />
+        <TrustedBy />
+        <div id="features">
+          <Features />
+        </div>
+        <div id="pricing">
+          <Pricing />
+        </div>
+        <WhySystemWorks />
+        <GrowthStats />
+        <div id="testimonials">
+          <Testimonials />
+        </div>
+      </main>
       <Footer />
     </div>
   );
