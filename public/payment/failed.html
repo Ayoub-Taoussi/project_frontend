@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement échoué - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .failed-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        
+        .failed-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .failed-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--error-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+        }
+        
+        .failed-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .failed-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .error-details {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-red);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .solutions {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .solutions h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .solutions ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .solutions li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .solutions li::before {
+            content: "•";
+            color: var(--primary-blue);
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="failed-container">
+        <div class="failed-card">
+            <div class="failed-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            
+            <h1 class="failed-title">Paiement échoué</h1>
+            <p class="failed-subtitle">
+                Nous n'avons pas pu traiter votre paiement. 
+                Aucun montant n'a été débité de votre compte.
+            </p>
+            
+            <div class="error-details">
+                <h4 style="color: var(--error-red); margin-bottom: 0.5rem;">Détails de l'erreur :</h4>
+                <p id="errorMessage" style="color: var(--text-secondary); margin: 0;">
+                    Carte bancaire refusée. Veuillez vérifier vos informations ou utiliser une autre carte.
+                </p>
+            </div>
+            
+            <div class="solutions">
+                <h4>Solutions possibles :</h4>
+                <ul>
+                    <li>Vérifiez que vos informations de carte sont correctes</li>
+                    <li>Assurez-vous que votre carte n'est pas expirée</li>
+                    <li>Vérifiez que vous avez suffisamment de fonds</li>
+                    <li>Essayez avec une autre carte bancaire</li>
+                    <li>Contactez votre banque si le problème persiste</li>
+                </ul>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="retryPayment()">
+                Réessayer le paiement
+            </button>
+            
+            <button class="btn btn-secondary" style="width: 100%; margin-bottom: 1rem;" onclick="contactSupport()">
+                Contacter le support
+            </button>
+            
+            <button class="btn btn-secondary" style="width: 100%;" onclick="goBack()">
+                Retour aux plans
+            </button>
+        </div>
+    </div>
+
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Récupérer le message d'erreur depuis l'URL si disponible
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorCode = urlParams.get('error');
+            
+            const errorMessages = {
+                'card_declined': 'Carte bancaire refusée par votre banque.',
+                'insufficient_funds': 'Fonds insuffisants sur votre compte.',
+                'expired_card': 'Votre carte bancaire est expirée.',
+                'incorrect_cvc': 'Code de sécurité (CVC) incorrect.',
+                'processing_error': 'Erreur de traitement. Veuillez réessayer.',
+                'network_error': 'Erreur de connexion. Vérifiez votre connexion internet.'
+            };
+            
+            if (errorCode && errorMessages[errorCode]) {
+                document.getElementById('errorMessage').textContent = errorMessages[errorCode];
+            }
+        });
+        
+        function retryPayment() {
+            window.location.href = 'checkout.html';
+        }
+        
+        function contactSupport() {
+            window.location.href = '../help/contact.html?subject=payment_issue';
+        }
+        
+        function goBack() {
+            window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>

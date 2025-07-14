@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.5rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <h1 class="auth-title">Connexion</h1>
+            <p class="auth-subtitle">Connectez-vous à votre compte ReviewBoost</p>
+            
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Se souvenir de moi</label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Se connecter
+                </button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="forgot-password.html">Mot de passe oublié ?</a>
+            </div>
+            
+            <div class="divider">
+                <span>ou</span>
+            </div>
+            
+            <div class="auth-links">
+                <p>Pas encore de compte ? <a href="signup.html">S'inscrire</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        handleFormSubmit('loginForm', async (data) => {
+            const result = await authManager.login(data.email, data.password);
+            
+            if (result.success) {
+                Utils.showAlert('Connexion réussie !', 'success');
+                setTimeout(() => {
+                    window.location.href = '../dashboard/index.html';
+                }, 1000);
+            } else {
+                Utils.showAlert(result.error, 'error');
+            }
+        });
+
+        // Compte de démonstration
+        document.addEventListener('DOMContentLoaded', () => {
+            const demoInfo = document.createElement('div');
+            demoInfo.innerHTML = `
+                <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; border-radius: 0.5rem; padding: 1rem; margin-top: 1rem; font-size: 0.875rem;">
+                    <strong>Compte de démonstration :</strong><br>
+                    Email: demo@reviewboost.com<br>
+                    Mot de passe: demo123
+                </div>
+            `;
+            document.querySelector('.auth-card').appendChild(demoInfo);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choisir votre plan - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .checkout-container {
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            background: var(--dark-bg);
+        }
+        
+        .checkout-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .checkout-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .plan-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .plan-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-4px);
+        }
+        
+        .plan-card.popular {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .plan-period {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .plan-features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .plan-features li::before {
+            content: "✓";
+            color: var(--success-green);
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        .promo-section {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 2rem auto;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .promo-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .guarantee {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="container">
+            <div class="checkout-header">
+                <h1 class="checkout-title">Choisissez votre plan</h1>
+                <p style="color: var(--text-secondary); font-size: 1.125rem;">
+                    Commencez avec ce dont vous avez besoin aujourd'hui, évoluez au fur et à mesure
+                </p>
+            </div>
+            
+            <div class="plans-grid">
+                <!-- Plan Starter -->
+                <div class="plan-card" data-plan="starter">
+                    <h3 class="plan-name">Starter</h3>
+                    <div class="plan-price">79€</div>
+                    <div class="plan-period">/mois</div>
+                    
+                    <ul class="plan-features">
+                        <li>Jusqu'à 100 SMS/mois</li>
+                        <li>Gestion basique des avis</li>
+                        <li>Support par email</li>
+                        <li>Dashboard en temps réel</li>
+                        <li>Analyses de base</li>
+                    </ul>
+                    
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="selectPlan('starter', 79)">
+                        Commencer
+                    </button>
+                </div>
+                
+                <!-- Plan Boost -->
+                <div class="plan-card popular" data-plan="boost">
+                    <div class="plan-badge">Plus populaire</div>
+                    <h3 class="plan-name">Boost</h3>
+                    <div class="plan-price">119€</div>
+                    <div class="plan-period">/mois</div>
+                    
+                    <ul class="plan-features">
+                        <li>Tout dans Starter</li>
+                        <li>Jusqu'à 500 SMS/mois</li>
+                        <li>Automatisation avancée des avis</li>
+                        <li>Automatisation client & représentant</li>
+                        <li>Support prioritaire</li>
+                        <li>Personnalisation de marque</li>
+                        <li>Analyses avancées</li>
+                    </ul>
+                    
+                    <button class="btn btn-primary" style="width: 100%;" onclick="selectPlan('boost', 119)">
+                        Commencer
+                    </button>
+                </div>
+                
+                <!-- Plan Pro -->
+                <div class="plan-card" data-plan="pro">
+                    <h3 class="plan-name">Pro</h3>
+                    <div class="plan-price">159€</div>
+                    <div class="plan-period">/mois</div>
+                    
+                    <ul class="plan-features">
+                        <li>Tout dans Boost</li>
+                        <li>Jusqu'à 1000 SMS/mois</li>
+                        <li>Analyses et rapports avancés</li>
+                        <li>Support multi-emplacements</li>
+                        <li>Accès API</li>
+                        <li>Intégrations personnalisées</li>
+                    </ul>
+                    
+                    <button class="btn btn-secondary" style="width: 100%;" onclick="selectPlan('pro', 159)">
+                        Commencer
+                    </button>
+                </div>
+            </div>
+            
+            <div class="promo-section">
+                <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">Code promo</h4>
+                <p style="color: var(--text-secondary); font-size: 0.875rem;">Vous avez un code de réduction ?</p>
+                <div class="promo-input">
+                    <input type="text" id="promoCode" class="form-input" placeholder="Entrez votre code">
+                    <button class="btn btn-secondary" onclick="applyPromo()">Appliquer</button>
+                </div>
+            </div>
+            
+            <div class="guarantee">
+                <p>✓ Garantie satisfait ou remboursé 30 jours • Annulation à tout moment • Aucun frais d'installation</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        let selectedPlan = null;
+        let selectedPrice = 0;
+        let discount = 0;
+        
+        function selectPlan(plan, price) {
+            selectedPlan = plan;
+            selectedPrice = price;
+            
+            // Simulation du processus de paiement Stripe
+            Utils.showAlert('Redirection vers le paiement...', 'info');
+            
+            setTimeout(() => {
+                // Simuler un paiement réussi
+                localStorage.setItem('selected_plan', plan);
+                localStorage.setItem('payment_amount', price - discount);
+                window.location.href = 'success.html';
+            }, 2000);
+        }
+        
+        function applyPromo() {
+            const promoCode = document.getElementById('promoCode').value.trim();
+            
+            // Codes promo de démonstration
+            const promoCodes = {
+                'WELCOME10': 10,
+                'BOOST20': 20,
+                'SAVE15': 15
+            };
+            
+            if (promoCodes[promoCode.toUpperCase()]) {
+                discount = promoCodes[promoCode.toUpperCase()];
+                Utils.showAlert(`Code promo appliqué ! Réduction de ${discount}€`, 'success');
+                
+                // Mettre à jour les prix affichés
+                document.querySelectorAll('.plan-price').forEach((priceEl, index) => {
+                    const originalPrices = [79, 119, 159];
+                    const newPrice = originalPrices[index] - discount;
+                    priceEl.innerHTML = `${newPrice}€ <span style="text-decoration: line-through; font-size: 1.5rem; color: var(--text-secondary);">${originalPrices[index]}€</span>`;
+                });
+            } else {
+                Utils.showAlert('Code promo invalide', 'error');
+            }
+        }
+        
+        // Vérifier si l'utilisateur vient de l'inscription
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromSignup = urlParams.get('from') === 'signup';
+            
+            if (fromSignup) {
+                Utils.showAlert('Compte créé ! Choisissez maintenant votre plan.', 'success');
+            }
+        });
+    </script>
+</body>
+</html>

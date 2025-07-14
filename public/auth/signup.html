@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.5rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <h1 class="auth-title">Inscription</h1>
+            <p class="auth-subtitle">Créez votre compte ReviewBoost</p>
+            
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="name" class="form-label">Nom complet</label>
+                    <input type="text" id="name" name="name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="business" class="form-label">Nom de l'entreprise</label>
+                    <input type="text" id="business" name="business" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" id="password" name="password" class="form-input" required minlength="8">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">J'accepte les <a href="#" style="color: var(--primary-blue);">conditions d'utilisation</a></label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Créer mon compte
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span>ou</span>
+            </div>
+            
+            <div class="auth-links">
+                <p>Déjà un compte ? <a href="login.html">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        handleFormSubmit('signupForm', async (data) => {
+            // Vérification des mots de passe
+            if (data.password !== data.confirmPassword) {
+                Utils.showAlert('Les mots de passe ne correspondent pas', 'error');
+                return;
+            }
+            
+            if (!Utils.validatePassword(data.password)) {
+                Utils.showAlert('Le mot de passe doit contenir au moins 8 caractères', 'error');
+                return;
+            }
+            
+            const result = await authManager.signup(data);
+            
+            if (result.success) {
+                Utils.showAlert('Compte créé avec succès !', 'success');
+                setTimeout(() => {
+                    window.location.href = '../payment/checkout.html';
+                }, 1000);
+            } else {
+                Utils.showAlert(result.error, 'error');
+            }
+        });
+    </script>
+</body>
+</html>
