@@ -2,65 +2,71 @@ import React from 'react';
 import { Check, Star } from 'lucide-react';
 
 const Pricing = () => {
+  const handlePlanSelection = (planName: string) => {
+    // Pour l'instant, on redirige vers la page de checkout
+    // Plus tard, on peut ajouter des paramètres pour pré-sélectionner le plan
+    window.location.href = `/payment/checkout.html?plan=${planName.toLowerCase()}`;
+  };
+
   const plans = [
     {
       name: "Starter",
       price: "$79",
-      period: "/month",
-      description: "Perfect for small businesses just getting started",
+      period: "/mois",
+      description: "Parfait pour les petites entreprises qui débutent",
       features: [
-        "Up to 100 SMS messages/mo",
-        "Basic review management",
-        "Email support",
-        "Live chat dashboard",
-        "Basic analytics"
+        "Jusqu'à 100 SMS/mois",
+        "Gestion basique des avis",
+        "Support par email",
+        "Dashboard en temps réel",
+        "Analyses de base"
       ],
-      buttonText: "Get Started",
+      buttonText: "Commencer",
       buttonStyle: "border border-gray-600 text-white hover:bg-slate-800"
     },
     {
       name: "Boost",
       price: "$119",
-      period: "/month",
-      description: "Most popular plan for growing businesses",
+      period: "/mois",
+      description: "Le plus populaire pour les entreprises en croissance",
       features: [
-        "Everything in Starter",
-        "Up to 500 SMS messages/mo",
-        "Advanced review automation",
-        "Customer & Rep automation",
-        "Priority support",
-        "Custom branding",
-        "Advanced analytics"
+        "Tout dans Starter",
+        "Jusqu'à 500 SMS/mois",
+        "Automatisation avancée des avis",
+        "Automatisation client & représentant",
+        "Support prioritaire",
+        "Personnalisation de marque",
+        "Analyses avancées"
       ],
-      buttonText: "Get Started",
+      buttonText: "Commencer",
       buttonStyle: "bg-blue-600 hover:bg-blue-700 text-white",
       popular: true
     },
     {
       name: "Pro",
       price: "$159",
-      period: "/month",
-      description: "For established businesses that need more power",
+      period: "/mois",
+      description: "Pour les entreprises établies qui ont besoin de plus de puissance",
       features: [
-        "Everything in Boost",
-        "Up to 1000 SMS messages/mo",
-        "Advanced analytics and reporting",
-        "Multiple location support",
-        "API access",
-        "Custom integrations"
+        "Tout dans Boost",
+        "Jusqu'à 1000 SMS/mois",
+        "Analyses et rapports avancés",
+        "Support multi-emplacements",
+        "Accès API",
+        "Intégrations personnalisées"
       ],
-      buttonText: "Get Started",
+      buttonText: "Commencer",
       buttonStyle: "border border-gray-600 text-white hover:bg-slate-800"
     }
   ];
 
   return (
-    <section id="pricing" className="bg-slate-900 py-20">
+    <section className="bg-slate-900 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-4">Choose Your Plan</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">Choisissez votre plan</h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Start with what you need today, upgrade as you grow
+            Commencez avec ce dont vous avez besoin aujourd'hui, évoluez au fur et à mesure
           </p>
         </div>
         
@@ -73,7 +79,7 @@ const Pricing = () => {
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <div className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center">
                     <Star className="w-4 h-4 mr-1 fill-current" />
-                    Most Popular
+                    Plus populaire
                   </div>
                 </div>
               )}
@@ -96,7 +102,10 @@ const Pricing = () => {
                 ))}
               </ul>
               
-              <button className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${plan.buttonStyle}`}>
+              <button 
+                onClick={() => handlePlanSelection(plan.name)}
+                className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${plan.buttonStyle}`}
+              >
                 {plan.buttonText}
               </button>
             </div>
@@ -105,7 +114,7 @@ const Pricing = () => {
         
         <div className="text-center mt-12">
           <p className="text-gray-400 text-sm">
-            30-day money-back guarantee • Cancel anytime • No setup fees
+            Garantie satisfait ou remboursé 30 jours • Annulation à tout moment • Aucun frais d'installation
           </p>
         </div>
       </div>
