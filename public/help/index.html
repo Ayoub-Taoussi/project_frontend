@@ -1,0 +1,230 @@
+<!-- /public/help/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centre d'aide - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <style>
+        .help-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .help-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .help-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .category-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .category-card:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-blue);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .category-links {
+            list-style: none;
+        }
+
+        .category-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .category-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .category-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .popular-articles {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-section {
+            text-align: center;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--primary-blue);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="help-container">
+        <div class="help-header">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 3rem; height: 3rem; margin-right: 1rem; color: var(--primary-blue);">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 2rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            <h1 class="help-title">Centre d'aide</h1>
+            <p style="font-size: 1.25rem; color: var(--text-secondary);">
+                Trouvez rapidement les réponses à vos questions
+            </p>
+
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Rechercher dans l'aide..." id="searchInput">
+                <button class="search-btn" onclick="searchHelp()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="categories-grid">
+            <div class="category-card">
+                <div class="category-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="m2 17 10 5 10-5"/>
+                        <path d="m2 12 10 5 10-5"/>
+                    </svg>
+                </div>
+                <h3 class="category-title">Premiers pas</h3>
+                <ul class="category-links">
+                    <li><a href="#getting-started">Configuration initiale</a></li>
+                    <li><a href="#qr-setup">Créer votre QR Code</a></li>
+                    <li><a href="#first-review">Collecter votre premier avis</a></li>
+                    <li><a href="#dashboard-tour">Tour du dashboard</a></li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        <rect width="5" height="5" x="16" y="3" rx="1"/>
+                        <rect width="5" height="5" x="3" y="16" rx="1"/>
+                    </svg>
+                </div>
+                <h3 class="category-title">QR Code</h3>
+                <ul class="category-links">
+                    <li><a href="#qr-customize">Personnaliser le QR Code</a></li>
+                    <li><a href="#qr-print">Imprimer et placer le QR Code</a></li>
+                    <li><a href="#qr-analytics">Statistiques de scan</a></li>
+                    <li><a href="#qr-troubleshoot">Problèmes de scan</a></li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="category-title">SMS Marketing</h3>
+                <ul class="category-links">
+                    <li><a href="#sms-setup">Configuration SMS</a></li>
+                    <li><a href="#sms-templates">Templates de messages</a></li>
+                    <li><a href="#sms-timing">Timing optimal</a></li>
+                    <li><a href="#sms-compliance">Conformité RGPD</a></li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                    </svg>
+                </div>
+                <h3 class="category-title">Gestion des avis</h3>
+                <ul class="category-links">
+                    <li><a href="#review-filter">Filtrage automatique</a></li>
+                    <li><a href="#google-integration">Intégration Google</a></li>
+                    <li><a href="#negative-reviews">Gérer les avis négatifs</a></li>
+                    <li><a href="#review-export">Exporter les avis</a></li>
+                </ul>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <path d="M3 3v18h18"/>
+                        <path d="m19 9-5 5-4-4-3 3"/>
+                    </svg>
+                </div>
+                <h3 class="category-title">Analytics</h3>
+                <ul class="category-links">
+                    <li><a href="#analytics-overview">Vue d'ensemble</a></li>
+                    <li><a href="#conversion-rates">Taux de conversion</a></li>
+                    <li><a href="#reports
