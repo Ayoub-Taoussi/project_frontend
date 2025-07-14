@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abonnement - ReviewBoost</title>
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <style>
+        .subscription-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .current-plan {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid var(--primary-blue);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: -12px;
+            left: 2rem;
+            background: var(--primary-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .plan-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+        
+        .usage-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .usage-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .usage-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .usage-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .billing-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .billing-history {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .invoice-row:last-child {
+            border-bottom: none;
+        }
+        
+        .invoice-date {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .invoice-amount {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        
+        .invoice-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-paid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-green);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-yellow);
+        }
+        
+        .upgrade-section {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        
+        .upgrade-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .upgrade-features {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .upgrade-features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .upgrade-features li::before {
+            content: "✓";
+            color: white;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        .danger-zone {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid var(--error-red);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .danger-title {
+            color: var(--error-red);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .plan-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .invoice-row {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span style="font-size: 1.25rem; font-weight: 700;">ReviewBoost</span>
+            </div>
+            
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="index.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="qr-code.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                        </svg>
+                        QR Code
+                    </a></li>
+                    <li><a href="analytics.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                        </svg>
+                        Analyses
+                    </a></li>
+                    <li><a href="sms-settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        SMS & Messages
+                    </a></li>
+                    <li><a href="settings.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Paramètres
+                    </a></li>
+                    <li><a href="subscription.html" class="active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect width="20" height="14" x="2" y="5" rx="2"/>
+                            <line x1="2" x2="22" y1="10" y2="10"/>
+                        </svg>
+                        Abonnement
+                    </a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="dashboard-title">Mon Abonnement</h1>
+                    <p style="color: var(--text-secondary);">Gérez votre plan et votre facturation</p>
+                </div>
+            </div>
+
+            <div class="subscription-container">
+                <!-- Plan actuel -->
+                <div class="current-plan">
+                    <div class="plan-badge">Plan actuel</div>
+                    <div class="plan-header">
+                        <div>
+                            <div class="plan-name">Plan Boost</div>
+                            <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+                                Le plan parfait pour les entreprises en croissance
+                            </p>
+                        </div>
+                        <div class="plan-price">119€<span style="font-size: 1rem; color: var(--text-secondary);">/mois</span></div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: var(--text-primary);">Prochaine facturation :</strong>
+                        <span style="color: var(--text-secondary);">15 août 2025</span>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="changePlan()">Changer de plan</button>
+                        <button class="btn btn-secondary" onclick="downloadInvoice()">Télécharger la facture</button>
+                    </div>
+                </div>
+
+                <!-- Utilisation du mois -->
+                <div class="billing-section">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">Utilisation ce mois-ci</h3>
+                    
+                    <div class="usage-stats">
+                        <div class="usage-item">
+                            <div class="usage-number">89</div>
+                            <div class="usage-label">SMS envoyés</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 18%;"></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                89 / 500
+                            </div>
+                        </div>
+                        
+                        <div class="usage-item">
+                            <div class="usage-number">156</div>
+                            <div class="usage-label">Avis collectés</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--success-green); margin-top: 0.25rem;">
+                                Illimité
+                            </div>
+                        </div>
+                        
+                        <div class="usage-item">
+                            <div class="usage-number">1,247</div>
+                            <div class="usage-label">Scans QR Code</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--success-green); margin-top: 0.25rem;">
+                                Illimité
+                            </div>
+                        </div>
+                        
+                        <div class="usage-item">
+                            <div class="usage-number">3</div>
+                            <div class="usage-label">Utilisateurs</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                3 / 5
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggestion d'upgrade -->
+                <div class="upgrade-section">
+                    <div class="upgrade-title">🚀 Passez au plan Pro</div>
+                    <p style="margin-bottom: 1.5rem; opacity: 0.9;">
+                        Débloquez tout le potentiel de ReviewBoost pour seulement 40€ de plus par mois
+                    </p>
+                    
+                    <ul class="upgrade-features">
+                        <li>1000 SMS/mois (au lieu de 500)</li>
+                        <li>Support multi-emplacements</li>
+                        <li>Analyses et rapports avancés</li>
+                        <li>Accès API complet</li>
+                        <li>Intégrations personnalisées</li>
+                        <li>Support prioritaire 24/7</li>
+                    </ul>
+                    
+                    <button class="btn" style="background: white; color: var(--primary-blue); font-weight: 600;" onclick="upgradeToPro()">
+                        Passer au Pro - 159€/mois
+                    </button>
+                </div>
+
+                <!-- Historique de facturation -->
+                <div class="billing-history">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                        <h3 style="color: var(--text-primary); margin: 0;">Historique de facturation</h3>
+                    </div>
+                    
+                    <div class="invoice-row">
+                        <div>
+                            <div class="invoice-date">15 juillet 2025</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Plan Boost - Juillet 2025</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="invoice-amount">119,00 €</div>
+                            <div class="invoice-status status-paid">Payé</div>
+                        </div>
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="downloadInvoice('2025-07')">
+                            PDF
+                        </button>
+                    </div>
+                    
+                    <div class="invoice-row">
+                        <div>
+                            <div class="invoice-date">15 juin 2025</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Plan Boost - Juin 2025</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="invoice-amount">119,00 €</div>
+                            <div class="invoice-status status-paid">Payé</div>
+                        </div>
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="downloadInvoice('2025-06')">
+                            PDF
+                        </button>
+                    </div>
+                    
+                    <div class="invoice-row">
+                        <div>
+                            <div class="invoice-date">15 mai 2025</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Plan Starter - Mai 2025</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="invoice-amount">79,00 €</div>
+                            <div class="invoice-status status-paid">Payé</div>
+                        </div>
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="downloadInvoice('2025-05')">
+                            PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Informations de facturation -->
+                <div class="billing-section">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1.5rem;">Informations de facturation</h3>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <strong style="color: var(--text-primary);">Carte de crédit :</strong>
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                            <span style="color: var(--text-secondary);">•••• •••• •••• 4242</span>
+                            <span style="color: var(--text-secondary);">Exp: 12/26</span>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="updatePaymentMethod()">
+                                Modifier
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <strong style="color: var(--text-primary);">Adresse de facturation :</strong>
+                        <div style="color: var(--text-secondary); margin-top: 0.5rem; line-height: 1.4;">
+                            Demo Business<br>
+                            123 Rue de la République<br>
+                            75001 Paris, France
+                        </div>
+                        <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem; margin-top: 0.5rem;" onclick="updateBillingAddress()">
+                            Modifier
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Zone de danger -->
+                <div class="danger-zone">
+                    <h3 class="danger-title">Zone de danger</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        Ces actions sont irréversibles. Procédez avec prudence.
+                    </p>
+                    
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn" style="background: var(--error-red); color: white;" onclick="pauseSubscription()">
+                            Suspendre l'abonnement
+                        </button>
+                        <button class="btn" style="background: transparent; border: 1px solid var(--error-red); color: var(--error-red);" onclick="cancelSubscription()">
+                            Annuler l'abonnement
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        if (!authManager.requireAuth()) {
+            // Redirection automatique si non connecté
+        }
+
+        function changePlan() {
+            window.location.href = '../payment/checkout.html?upgrade=true';
+        }
+
+        function upgradeToPro() {
+            if (confirm('Voulez-vous passer au plan Pro pour 159€/mois ?')) {
+                Utils.showAlert('Redirection vers le paiement...', 'info');
+                setTimeout(() => {
+                    window.location.href = '../payment/checkout.html?plan=pro&upgrade=true';
+                }, 1000);
+            }
+        }
+
+        function downloadInvoice(period = 'current') {
+            Utils.showAlert('Téléchargement de la facture...', 'info');
+            
+            // Simulation du téléchargement
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = '#'; // En production, ce serait l'URL de l'API pour générer le PDF
+                link.download = `facture-reviewboost-${period}.pdf`;
+                Utils.showAlert('Facture téléchargée', 'success');
+            }, 1000);
+        }
+
+        function updatePaymentMethod() {
+            Utils.showAlert('Redirection vers Stripe...', 'info');
+            // En production, rediriger vers Stripe Customer Portal
+        }
+
+        function updateBillingAddress() {
+            const newAddress = prompt('Nouvelle adresse de facturation:');
+            if (newAddress) {
+                Utils.showAlert('Adresse mise à jour', 'success');
+            }
+        }
+
+        function pauseSubscription() {
+            if (confirm('Êtes-vous sûr de vouloir suspendre votre abonnement ?')) {
+                Utils.showAlert('Abonnement suspendu. Vous pouvez le réactiver à tout moment.', 'success');
+            }
+        }
+
+        function cancelSubscription() {
+            const confirmation = prompt('Tapez "ANNULER" pour confirmer l\'annulation définitive:');
+            if (confirmation === 'ANNULER') {
+                Utils.showAlert('Abonnement annulé. Vous conservez l\'accès jusqu\'à la fin de la période de facturation.', 'success');
+            }
+        }
+    </script>
+</body>
+</html>
