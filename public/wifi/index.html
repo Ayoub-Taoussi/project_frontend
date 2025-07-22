@@ -354,6 +354,7 @@
 
     <script>
         const backend = "https://reviewboost-backend.onrender.com";
+        const backend = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
         const uid = new URLSearchParams(window.location.search).get('uid') || 'demo';
         let selectedRating = 0;
         let businessInfo = {};
@@ -361,7 +362,7 @@
         // Charger les informations de l'entreprise
         async function loadBusinessInfo() {
             try {
-                const response = await fetch(`${backend}/public/user/${uid}`);
+                const response = await fetch(`${backend}/public-feedback/user/${uid}`);
                 if (response.ok) {
                     businessInfo = await response.json();
                     
@@ -475,12 +476,12 @@
             
             try {
                 // Envoyer les données au backend
-                const response = await fetch(`${backend}/wifi-feedback`, {
+                const response = await fetch(`${backend}/public-feedback`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({...data, source: 'wifi'})
                 });
                 
                 if (response.ok) {
